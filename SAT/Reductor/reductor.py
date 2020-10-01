@@ -129,32 +129,35 @@ def ConvertirSATaXSAT(clausulas, x, var):
 			nuevasClausulas.append(list())
 			for i in range(0, x-1):
 				nuevasClausulas[-1].append(clause[i])
-			maxvar += 1
-			nuevasClausulas[-1].append(maxvar)
+			newvar = np.array( next(variable) )
+			nuevasClausulas[-1].append( newvar )
 
-			for i in range(x-1,len(clause)-x+1):
+			for i in range(x-1,len(clause)-x+1,x-2):
 				nuevasClausulas.append(list())
-				nuevasClausulas[-1].append(-maxvar)
-				nuevasClausulas[-1].append(clause[i])
-				maxvar += 1
-				nuevasClausulas[-1].append(maxvar)
+				nuevasClausulas[-1].append( -newvar )
+
+				for j in range (i, i+x-2):
+					nuevasClausulas[-1].append(clause[j])
+
+				newvar = np.array( next(variable) )
+				nuevasClausulas[-1].append( newvar )
 
 			nuevasClausulas.append(list())
-			nuevasClausulas[-1].append(-maxvar)
+			nuevasClausulas[-1].append( -newvar )
+
+
 			for i in range(len(clause)-x+1, len(clause)):
 				nuevasClausulas[-1].append(clause[i])
 
-	return nuevasClausulas, str(maxvar)
+	return nuevasClausulas, str(np.array(next(variable))-1)
 
 #=============================================================================================================
 
-ejemploClau = [[1, -2, 3], [2, 4, 5,], [4, 6, 2, -1]]
-
-
+ejemploClau = [[1], [2, 4], [4, 6, 2],[-3, 2, -1, 5],[6, -2, -3, -5, 4],[-4, 6, -2, 1, 5, 3, 7]]
 
 x,y,z = ArchivoAListaDeClausulas(onlyfiles[0])
 
-ejemploConv,variables = ConvertirSATaXSAT(x,3,y)
+ejemploConv,variables = ConvertirSATaXSAT(x,4,y)
 
 ListaDeClausulasAArchivo(variables,ejemploConv,onlyfiles[0])
 
