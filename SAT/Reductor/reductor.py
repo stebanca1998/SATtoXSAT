@@ -3,6 +3,7 @@ from os.path import isfile, join
 from itertools import product
 from filesToClauses import ArchivoAListaDeClausulas
 from clausesToFile import ListaDeClausulasAArchivo
+
 import numpy as np
 import sys
 
@@ -94,13 +95,11 @@ def ConvertirSATaXSAT(clausulas, x, var):
 
 satNumber = int(sys.argv[1] )
 
-ejemploClau = [[1], [2, 4], [4, 6, 2],[-3, 2, -1, 5]]
+for fileName in onlyfiles:
+	x,y,z = ArchivoAListaDeClausulas(fileName)
 
-x,y,z = ArchivoAListaDeClausulas(onlyfiles[0])
+	ejemploConv,variables = ConvertirSATaXSAT(x,satNumber,y)
 
-ejemploConv,variables = ConvertirSATaXSAT(x,satNumber,y)
-
-ListaDeClausulasAArchivo(variables,ejemploConv,onlyfiles[0])
+	ListaDeClausulasAArchivo(variables,ejemploConv,fileName)
 
 
-from filesToClauses import ArchivoAListaDeClausulas
