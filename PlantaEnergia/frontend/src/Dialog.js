@@ -59,19 +59,22 @@ const DialogActions = withStyles((theme) => ({
 
 export default function CustomizedDialogs(props) {
   const [open, setOpen] = useState(false);
+  const [matrix, setMatrix] = useState([[0]]);
 
   useEffect(() => {
     setOpen(props.open);
-  },[props.open]);
+    setMatrix(props.matrix);
+    console.log(props.matrix);
+  });
 
   const onChange = (event, key, matrix) => {
     let [client, day] = key.split("-").map((index) => parseInt(index));
-    console.log("client: ", client, "day: ", day);
-
     let copy = matrix;
     copy[client][day] = parseInt(event.target.value)
       ? parseInt(event.target.value)
       : 0;
+    console.log("copy ", copy);
+    console.log("props.matrix ", props.matrix);
     props.setMatrix(copy);
   };
 
@@ -87,7 +90,7 @@ export default function CustomizedDialogs(props) {
   const Matrix = (
     <Table responsive="true">
       <tbody>
-        {props.matrix.map((arrItem, i) => {
+        {matrix.map((arrItem, i) => {
           return (
             <tr key={i}>
               {arrItem.map((item, j) => {
@@ -95,15 +98,20 @@ export default function CustomizedDialogs(props) {
                   <td key={j}>
                     <TextField
                       variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                       placeholder={`${item}`}
-                      onChange={(event) =>
-                        onChange(event, i + "-" + j, props.matrix)
-                      }
+                      label={`Cliente ${i + 1}, Dia ${j + 1}`}
+                      onChange={(event) => {
+                        onChange(event, i + "-" + j, matrix);
+                      }}
                       style={{
-                        maxWidth: "60px",
-                        minWidth: "60px",
-                        maxHeight: "60px",
-                        minHeight: "60px",
+                        maxWidth: 120,
+                        minWidth: 120,
+                        maxHeight: 60,
+                        minHeight: 60,
+                        padding: 5,
                       }}
                     />
                   </td>
@@ -119,8 +127,6 @@ export default function CustomizedDialogs(props) {
   return (
     <div style={{ alignContent: "center", alignItems: "center" }}>
       <Dialog aria-labelledby="customized-dialog-title" open={open}>
-        {" "}
-        {console.log(props.matrix)}
         <DialogTitle id="customized-dialog-title">
           Demanda diaria de energía (Megawatts)
         </DialogTitle>
