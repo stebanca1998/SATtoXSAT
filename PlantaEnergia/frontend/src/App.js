@@ -12,6 +12,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Divider from "@material-ui/core/Divider";
 import IconAdd from "@material-ui/icons/NoteAddSharp";
 import Dialog from "./Dialog.js";
+import Slider from "@material-ui/core/Slider";
 import "fontsource-roboto";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,13 +29,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const leftGridSpace = 1;
+const rightGridSpace = 3;
+
 function App() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
   const [days, setDays] = useState(1); // Dias
   const [clients, setClients] = useState(1); // Clientes
-  
+
   const [pn, setPn] = useState(0); //
   const [ph, setPh] = useState(0); //  Produccion diaria
   const [pt, setPt] = useState(0); //
@@ -42,6 +46,32 @@ function App() {
   const [cn, setCn] = useState(0); //
   const [ch, setCh] = useState(0); //  Costo de produccion
   const [ct, setCt] = useState(0); //
+
+  const [dr, setDr] = useState(0); // Número de días de espera
+  const [r, setR] = useState(0); // Porcentaje régimen alto
+  const marks = [
+    //
+    {
+      value: 0,
+      label: "0%",
+    },
+    {
+      value: 25,
+      label: "25%",
+    },
+    {
+      value: 50,
+      label: "50%",
+    },
+    {
+      value: 75,
+      label: "75%",
+    },
+    {
+      value: 100,
+      label: "100%",
+    },
+  ];
 
   var initMatrix = [];
 
@@ -53,12 +83,24 @@ function App() {
       }
     }
     setMatrix(initMatrix);
-  }, []);
+  }, [days, clients]);
 
   const [matrix, setMatrix] = useState(initMatrix); // Demanda diaria clientes/dias
 
   function onClick() {
-    let data = { days, clients, pn, ph, pt, cn, ch, ct, matrix };
+    let data = {
+      days,
+      clients,
+      cn,
+      ch,
+      ct,
+      pn,
+      ph,
+      pt,
+      dr,
+      r: r / 100,
+      matrix,
+    };
     axios
       .post("http://127.0.0.1:5000/", data, {
         headers: {
@@ -153,6 +195,16 @@ function App() {
     }
   }
 
+  function incDecDr(event, dr) {
+    if (event.target.innerText === "+") {
+      setDr(dr + 1);
+    } else {
+      if (dr - 1 >= 1) {
+        setDr(dr - 1);
+      }
+    }
+  }
+
   return (
     <div>
       <AppBar position="static">
@@ -173,7 +225,7 @@ function App() {
         justify="center"
         alignItems="center"
       >
-        <Grid item xs="auto" md={3} />
+        <Grid item xs="auto" md={leftGridSpace} />
         {/* Dias ---------------------------------------------------------------- */}
         <Grid item xs="auto" md={2} style={{ paddingTop: 30 }}>
           <form>
@@ -261,31 +313,8 @@ function App() {
           &nbsp;&nbsp;
         </Grid>
         {/* --------------------------------------------------------------------- */}
-        <Grid
-          item
-          xs="auto"
-          md={2}
-          style={{ paddingTop: 2, paddingLeft: "5px" }}
-        >
-          {" "}
-          &nbsp;
-          <Typography variant="h6" style={{ paddingBottom: 5 }}>
-            Demanda de energı́a
-          </Typography>
-          <IconAdd
-            color="primary"
-            style={{ fontSize: 58, paddingLeft: "55px" }}
-            onClick={() => setOpen(true)}
-          />
-        </Grid>
-        <Dialog
-          open={open}
-          setOpen={setOpen}
-          matrix={matrix}
-          setMatrix={setMatrix}
-        />
 
-        <Grid item xs="auto" md={3} />
+        <Grid item xs="auto" md={rightGridSpace + 4} />
       </Grid>
 
       {/* ############################################################################################# */}
@@ -298,18 +327,15 @@ function App() {
         justify="center"
         alignItems="center"
       >
-        <Grid item xs={6} style={{ paddingTop: 10, paddingBottom: 0 }}>
+        <Grid item xs="auto" md={leftGridSpace} />
+        <Grid item xs={4} style={{ paddingTop: 10, paddingBottom: 0 }}>
           <Divider variant="fullWidth" />
-          <Typography
-            variant="h6"
-            gutterBottom
-            style={{ paddingTop: 10, paddingBottom: 0 }}
-          >
-            Capacidad de producción diaria
-          </Typography>
         </Grid>
+        <Grid item xs="auto" md={rightGridSpace + 4} />
       </Grid>
       {/* divider ------------------------------------------------------------- */}
+
+      {/* ############################################################################################# */}
 
       <Grid
         container
@@ -318,7 +344,211 @@ function App() {
         justify="center"
         alignItems="center"
       >
-        <Grid item xs="auto" md={3} />
+        <Grid item xs="auto" md={leftGridSpace} />
+        {/* Central nuclear (N) ------------------------------------------------- */}
+        <Grid item xs="auto" md={2}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            style={{ paddingTop: 10, paddingBottom: 0 }}
+          >
+            Costos de producción
+          </Typography>
+          <form>
+            <Typography variant="subtitle1" gutterBottom>
+              &nbsp;Central Nuclear (N)
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => incDecCn(event, cn)}
+              className={classes.littleButtons}
+            >
+              <b>–</b>
+            </Button>
+            &nbsp;
+            <TextField
+              className={classes.textFields}
+              margin="dense"
+              id="outlined-basic"
+              label="(Cn)"
+              variant="outlined"
+              value={cn}
+              onChange={(event) =>
+                setCn(
+                  parseInt(event.target.value)
+                    ? parseInt(event.target.value)
+                    : 1
+                )
+              }
+            />
+            &nbsp;
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => incDecCn(event, cn)}
+              className={classes.littleButtons}
+            >
+              <b>+</b>
+            </Button>
+          </form>
+          &nbsp;
+        </Grid>
+        {/* --------------------------------------------------------------------- */}
+
+        {/* Central hidroeléctrica (H) ------------------------------------------ */}
+        <Grid item xs="auto" md={2}>
+          <form>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ paddingTop: 49 }}
+            >
+              Central Hidroeléctrica (H)
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => incDecCh(event, ch)}
+              className={classes.littleButtons}
+            >
+              <b>–</b>
+            </Button>
+            &nbsp;
+            <TextField
+              className={classes.textFields}
+              margin="dense"
+              id="outlined-basic"
+              label="(Ch)"
+              variant="outlined"
+              value={ch}
+              onChange={(event) =>
+                setCh(
+                  parseInt(event.target.value)
+                    ? parseInt(event.target.value)
+                    : 1
+                )
+              }
+            />
+            &nbsp;
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => incDecCh(event, ch)}
+              className={classes.littleButtons}
+            >
+              <b>+</b>
+            </Button>
+          </form>
+          &nbsp;&nbsp;
+        </Grid>
+        {/* --------------------------------------------------------------------- */}
+
+        {/* Central térmica (T) ------------------------------------------------- */}
+        <Grid item xs="auto" md={2}>
+          <form>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ paddingTop: 49 }}
+            >
+              &nbsp;Central Térmica (T)
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => incDecCt(event, ct)}
+              className={classes.littleButtons}
+            >
+              <b>–</b>
+            </Button>
+            &nbsp;
+            <TextField
+              className={classes.textFields}
+              margin="dense"
+              id="outlined-basic"
+              label="(Ct)"
+              variant="outlined"
+              value={ct}
+              onChange={(event) =>
+                setCt(
+                  parseInt(event.target.value)
+                    ? parseInt(event.target.value)
+                    : 1
+                )
+              }
+            />
+            &nbsp;
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => incDecCt(event, ct)}
+              className={classes.littleButtons}
+            >
+              <b>+</b>
+            </Button>
+          </form>
+          &nbsp;
+        </Grid>
+        {/* --------------------------------------------------------------------- */}
+
+        {/* Demanda de energıa -------------------------------------------------- */}
+        <Grid item xs="auto" md={2} style={{ paddingLeft: 5 }}>
+          <Typography variant="h6" style={{ paddingBottom: 5 }}>
+            Demanda de energı́a
+          </Typography>
+
+          <Typography variant="subtitle1" style={{ paddingBottom: 5 }}>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dia/Cliente
+          </Typography>
+
+          <IconAdd
+            color="primary"
+            style={{ fontSize: 58, paddingLeft: 55 }}
+            onClick={() => setOpen(true)}
+          />
+        </Grid>
+        <Dialog
+          open={open}
+          setOpen={setOpen}
+          matrix={matrix}
+          setMatrix={setMatrix}
+        />
+        {/* --------------------------------------------------------------------- */}
+        <Grid item xs="auto" md={rightGridSpace} />
+      </Grid>
+
+      {/* ############################################################################################# */}
+
+      {/* divider ------------------------------------------------------------- */}
+      <Grid
+        container
+        spacing={0}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xs="auto" md={leftGridSpace} />
+        <Grid item xs={6} style={{ paddingTop: 10 }}>
+          <Divider variant="fullWidth" />
+          <Typography variant="h6" gutterBottom style={{ paddingTop: 10 }}>
+            Capacidad de producción diaria
+          </Typography>
+        </Grid>
+
+        <Grid item xs={2} style={{ paddingLeft: 10, paddingTop: 10 }}>
+          <Divider variant="fullWidth" />
+          <Typography variant="h6" gutterBottom style={{ paddingTop: 10 }}>
+            Capacidad máxima
+          </Typography>
+        </Grid>
+
+        <Grid item xs="auto" md={rightGridSpace} />
+      </Grid>
+      {/* divider ------------------------------------------------------------- */}
+
+      <Grid container direction="row" justify="center" alignItems="center">
+        <Grid item xs="auto" md={leftGridSpace} />
         {/* Central nuclear (N) ------------------------------------------------- */}
         <Grid item xs="auto" md={2}>
           <form>
@@ -450,50 +680,16 @@ function App() {
           &nbsp;
         </Grid>
         {/* --------------------------------------------------------------------- */}
-        <Grid item xs="auto" md={3} />
-      </Grid>
-
-      {/* divider ------------------------------------------------------------- */}
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-        justify="center"
-        alignItems="center"
-      >
-        <Grid item xs={6} style={{ paddingTop: 20, paddingBottom: 0 }}>
-          <Divider variant="fullWidth" />
-          <Typography
-            variant="h6"
-            gutterBottom
-            style={{ paddingTop: 10, paddingBottom: 0 }}
-          >
-            Costos de producción
-          </Typography>
-        </Grid>
-      </Grid>
-      {/* divider ------------------------------------------------------------- */}
-
-      {/* ############################################################################################# */}
-
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-        justify="center"
-        alignItems="center"
-      >
-        <Grid item xs="auto" md={3} />
-        {/* Central nuclear (N) ------------------------------------------------- */}
-        <Grid item xs="auto" md={2}>
+        {/* Regimen: días de espera---------------------------------------------- */}
+        <Grid item xs="auto" md={2} style={{ paddingLeft: 10 }}>
           <form>
             <Typography variant="subtitle1" gutterBottom>
-              &nbsp;Central Nuclear (N)
+              Dias de espera
             </Typography>
             <Button
               variant="contained"
               color="primary"
-              onClick={(event) => incDecCn(event, cn)}
+              onClick={(event) => incDecDr(event, dr)}
               className={classes.littleButtons}
             >
               <b>–</b>
@@ -503,11 +699,11 @@ function App() {
               className={classes.textFields}
               margin="dense"
               id="outlined-basic"
-              label="(Cn)"
+              label="(dr)"
               variant="outlined"
-              value={cn}
+              value={dr}
               onChange={(event) =>
-                setCn(
+                setDr(
                   parseInt(event.target.value)
                     ? parseInt(event.target.value)
                     : 1
@@ -518,7 +714,7 @@ function App() {
             <Button
               variant="contained"
               color="primary"
-              onClick={(event) => incDecCn(event, cn)}
+              onClick={(event) => incDecDr(event, dr)}
               className={classes.littleButtons}
             >
               <b>+</b>
@@ -527,114 +723,49 @@ function App() {
           &nbsp;
         </Grid>
         {/* --------------------------------------------------------------------- */}
-
-        {/* Central hidroeléctrica (H) ------------------------------------------ */}
-        <Grid item xs="auto" md={2}>
+        {/* Porcentaje régimen alto -------------------------------------------- */}
+        <Grid item xs="auto" md={2} style={{ paddingLeft: 10 }}>
           <form>
             <Typography variant="subtitle1" gutterBottom>
-              Central Hidroeléctrica (H)
+              Porcentaje limite
             </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(event) => incDecCh(event, ch)}
-              className={classes.littleButtons}
-            >
-              <b>–</b>
-            </Button>
-            &nbsp;
-            <TextField
-              className={classes.textFields}
-              margin="dense"
-              id="outlined-basic"
-              label="(Ch)"
-              variant="outlined"
-              value={ch}
-              onChange={(event) =>
-                setCh(
-                  parseInt(event.target.value)
-                    ? parseInt(event.target.value)
-                    : 1
-                )
-              }
+            <Slider
+              defaultValue={0}
+              step={1}
+              valueLabelDisplay="auto"
+              marks={marks}
+              onChange={(event, newValue) => {
+                setR(newValue);
+                console.log(event.target.value);
+                console.log(newValue);
+              }}
             />
-            &nbsp;
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(event) => incDecCh(event, ch)}
-              className={classes.littleButtons}
-            >
-              <b>+</b>
-            </Button>
-          </form>
-          &nbsp;&nbsp;
-        </Grid>
-        {/* --------------------------------------------------------------------- */}
-
-        {/* Central térmica (T) ------------------------------------------------- */}
-        <Grid item xs="auto" md={2}>
-          <form>
-            <Typography variant="subtitle1" gutterBottom>
-              &nbsp;Central Térmica (T)
-            </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(event) => incDecCt(event, ct)}
-              className={classes.littleButtons}
-            >
-              <b>–</b>
-            </Button>
-            &nbsp;
-            <TextField
-              className={classes.textFields}
-              margin="dense"
-              id="outlined-basic"
-              label="(Ct)"
-              variant="outlined"
-              value={ct}
-              onChange={(event) =>
-                setCt(
-                  parseInt(event.target.value)
-                    ? parseInt(event.target.value)
-                    : 1
-                )
-              }
-            />
-            &nbsp;
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(event) => incDecCt(event, ct)}
-              className={classes.littleButtons}
-            >
-              <b>+</b>
-            </Button>
           </form>
           &nbsp;
         </Grid>
         {/* --------------------------------------------------------------------- */}
-        <Grid item xs="auto" md={3} />
+        <Grid item xs="auto" md={rightGridSpace - 2} />
       </Grid>
 
-      {/* ############################################################################################# */}
-
       {/* divider ------------------------------------------------------------- */}
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-        justify="center"
-        alignItems="center"
-      >
-        <Grid item xs={6} style={{ paddingTop: 10, paddingBottom: 0 }}>
+      <Grid container direction="row" justify="center" alignItems="center">
+        <Grid item xs="auto" md={leftGridSpace} />
+        <Grid item xs="auto" md={6}>
           <Divider variant="fullWidth" />
           <br />
           <Button variant="contained" color="primary" onClick={onClick}>
             Calcular
           </Button>
         </Grid>
+
+        <Grid item xs={4} style={{ paddingTop: 0, paddingLeft: 10 }}>
+          <Divider variant="fullWidth" />
+          <br />
+          <br />
+          <br />
+        </Grid>
+
+        <Grid item xs="auto" md={rightGridSpace - 2} />
       </Grid>
       {/* divider ------------------------------------------------------------- */}
     </div>
