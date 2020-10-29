@@ -20,7 +20,7 @@ array[1..n] of var 0..Pt: PT;   %Demanda diaria de central térmica
 
 % Se deben satisfacer la demanda diaria:
 constraint forall (i in 1..n) (     
-     PN[i]+PH[i]+PT[i] >= sum (j in 1..s)(D[i,j])      
+     PN[i]+PH[i]+PT[i] = sum (j in 1..s)(D[i,j])      
 );
 
 %Se debe evitar que entre en regimen alto durante "dr" dias consecutivos

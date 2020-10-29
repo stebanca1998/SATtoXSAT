@@ -1,0 +1,14 @@
+% Archivo de datos
+r=0.7;     %porcentaje límite para considerar régimen alto 
+dr=3;    %número de días de espera para evitar el  régimen alto  
+n=3;      %Número de días de producción
+s=3;      %Número de clientes
+Cn=146;    %Costo de producción de central nuclear
+Ch=13;    %Costo de producción de central hidroeléctrica
+Ct=66;    %Costo de producción de central térmica
+Pn=950;  %Max. producción diaria de central nuclear
+Ph=1500;   %Max. producción diaria de central hidroeléctrica
+Pt=1000;   %Max. producción diaria de  central térmica
+D=[|1000,900,900
+   |900,1000,900
+   |800,1000,900|];      %Demanda diaria
