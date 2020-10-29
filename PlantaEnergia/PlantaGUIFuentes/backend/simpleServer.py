@@ -40,10 +40,7 @@ def writeInstace(body):
     file.close()
     
 
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-
-
-    
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):  
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -60,7 +57,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         model.add_file("Datos.dzn")
 
         # Find the MiniZinc solver configuration for Gecode
-        gecode = Solver.lookup("gecode")
+        gecode = Solver.lookup("coin-bc")
         
         # Create an Instance of the n-Queens model for Gecode
         instance = Instance(gecode, model)
@@ -86,7 +83,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         print(responseData)
 
-        self.send_response(200)
+        self.send_response(200)        
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Content-Type', 'application/json')
         self.end_headers()
         response = BytesIO()
 

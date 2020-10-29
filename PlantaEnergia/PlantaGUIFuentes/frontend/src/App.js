@@ -76,13 +76,14 @@ function App() {
   var initMatrix = [];
 
   useEffect(() => {
-    for (var i = 0; i < clients; i++) {
+    for (var i = 0; i < days; i++) {
       initMatrix[i] = [];
-      for (var j = 0; j < days; j++) {
+      for (var j = 0; j < clients; j++) {
         initMatrix[i][j] = 0;
       }
     }
     setMatrix(initMatrix);
+    // eslint-disable-next-line
   }, [days, clients]);
 
   const [matrix, setMatrix] = useState(initMatrix); // Demanda diaria clientes/dias
@@ -734,11 +735,7 @@ function App() {
               step={1}
               valueLabelDisplay="auto"
               marks={marks}
-              onChange={(event, newValue) => {
-                setR(newValue);
-                console.log(event.target.value);
-                console.log(newValue);
-              }}
+              onChange={(event, newValue) => setR(newValue)}
             />
           </form>
           &nbsp;

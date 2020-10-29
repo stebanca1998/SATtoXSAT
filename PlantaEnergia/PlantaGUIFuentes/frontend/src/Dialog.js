@@ -61,20 +61,18 @@ export default function CustomizedDialogs(props) {
   const [open, setOpen] = useState(false);
   const [matrix, setMatrix] = useState([[0]]);
 
+  // eslint-disable-next-line
   useEffect(() => {
     setOpen(props.open);
     setMatrix(props.matrix);
-    console.log(props.matrix);
   });
 
   const onChange = (event, key, matrix) => {
-    let [client, day] = key.split("-").map((index) => parseInt(index));
+    let [day, client] = key.split("-").map((index) => parseInt(index));
     let copy = matrix;
-    copy[client][day] = parseInt(event.target.value)
+    copy[day][client] = parseInt(event.target.value)
       ? parseInt(event.target.value)
       : 0;
-    console.log("copy ", copy);
-    console.log("props.matrix ", props.matrix);
     props.setMatrix(copy);
   };
 
@@ -102,7 +100,7 @@ export default function CustomizedDialogs(props) {
                         shrink: true,
                       }}
                       placeholder={`${item}`}
-                      label={`Cliente ${i + 1}, Dia ${j + 1}`}
+                      label={`Dia ${i + 1}, Cliente ${j + 1}`}
                       onChange={(event) => {
                         onChange(event, i + "-" + j, matrix);
                       }}
