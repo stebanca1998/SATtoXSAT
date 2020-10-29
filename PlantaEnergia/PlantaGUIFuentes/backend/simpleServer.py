@@ -40,10 +40,7 @@ def writeInstace(body):
     file.close()
     
 
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-
-
-    
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):  
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -86,7 +83,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         print(responseData)
 
-        self.send_response(200)
+        self.send_response(200)        
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Content-Type', 'application/json')
         self.end_headers()
         response = BytesIO()
 
