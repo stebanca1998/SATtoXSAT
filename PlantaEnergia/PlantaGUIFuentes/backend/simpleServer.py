@@ -57,7 +57,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         model.add_file("Datos.dzn")
 
         # Find the MiniZinc solver configuration for Gecode
-        gecode = Solver.lookup("gecode")
+        gecode = Solver.lookup("coin-bc")
         
         # Create an Instance of the n-Queens model for Gecode
         instance = Instance(gecode, model)
