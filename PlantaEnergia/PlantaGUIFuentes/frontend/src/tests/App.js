@@ -15,8 +15,8 @@ import Slider from "@material-ui/core/Slider";
 import "fontsource-roboto";
 
 // Components
-import Dialog from "./Dialog.js";
-import Results from "./Results.js";
+import Dialog from "../Dialog";
+import Results from "../Results.js";
 
 const useStyles = makeStyles((theme) => ({
   littleButtons: {
@@ -37,25 +37,40 @@ const rightGridSpace = 3;
 
 function App() {
   const classes = useStyles();
+
+  /* -- --  --  --  --  Valores por defecto para pruebas --  --  --  -- -- */ 
+
   const [openDialog, setOpenDialog] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState({ content: false });
 
-  const [days, setDays] = useState(1); // Dias
-  const [clients, setClients] = useState(1); // Clientes
+  const [days, setDays] = useState(5); // Dias
+  const [clients, setClients] = useState(3); // Clientes
 
-  const [pn, setPn] = useState(0); //
-  const [ph, setPh] = useState(0); //  Produccion diaria
-  const [pt, setPt] = useState(0); //
+  const [pn, setPn] = useState(1000); //1000
+  const [ph, setPh] = useState(800); //  Produccion diaria 800
+  const [pt, setPt] = useState(1000); //1000
 
-  const [cn, setCn] = useState(0); //
-  const [ch, setCh] = useState(0); //  Costo de produccion
-  const [ct, setCt] = useState(0); //
+  const [cn, setCn] = useState(100); //
+  const [ch, setCh] = useState(50); //  Costo de produccion
+  const [ct, setCt] = useState(150); //
 
-  const [dr, setDr] = useState(0); // Número de días de espera
-  const [r, setR] = useState(0); // Porcentaje régimen alto
-  const marks = [
-    //
+  const [dr, setDr] = useState(2); // Número de días de espera
+  const [r, setR] = useState(80); // Porcentaje régimen alto
+  
+  var initMatrix = [
+    [500, 900, 800],
+    [200, 200, 200],
+    [600, 800, 400],
+    [600, 600, 500],
+    [700, 900, 700],
+  ];
+/* --  --  --  -- --  --  --  --  --  --  --  --  -- --  --  --  --  --  */
+
+
+  const [matrix, setMatrix] = useState(initMatrix); // Demanda diaria clientes/dias
+
+  const marks = [    
     {
       value: 0,
       label: "0%",
@@ -77,21 +92,6 @@ function App() {
       label: "100%",
     },
   ];
-
-  var initMatrix = [];
-
-  useEffect(() => {
-    for (var i = 0; i < days; i++) {
-      initMatrix[i] = [];
-      for (var j = 0; j < clients; j++) {
-        initMatrix[i][j] = 0;
-      }
-    }
-    setMatrix(initMatrix);
-    // eslint-disable-next-line
-  }, [days, clients]);
-
-  const [matrix, setMatrix] = useState(initMatrix); // Demanda diaria clientes/dias
 
   function onClick() {
     let data = {
@@ -117,7 +117,7 @@ function App() {
       .then((res) => {
         let response = JSON.stringify(Object.values(res)[0]);
         response = JSON.parse(response);
-        response.content = true;        
+        response.content = true;
         setResults(response);
         setShowResults(true);
         console.log(response);

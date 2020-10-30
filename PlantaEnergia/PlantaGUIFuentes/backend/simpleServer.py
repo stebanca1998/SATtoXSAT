@@ -46,6 +46,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length).decode('utf-8')
         body = json.loads(body)
+        # print(body)
         
         # Load n-Queens model from file
         model = Model("../../Modelo Minizinc/PlantaEnergia.mzn")
