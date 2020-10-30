@@ -141,7 +141,7 @@ export default function Results(props) {
         <DialogContent dividers>
           <DialogContentText>
             {props.results.satisfactible
-              ? `Planificación de la producción de energı́a en un horizonte de ${props.days} dı́as que satisface la demanda diaria ingresada. La "Función objetivo" fue ${props.results.Objective}`
+              ? `Planificación de la producción de energı́a en un horizonte de ${props.days} dı́as que satisface la demanda diaria ingresada. El costo total es de ${props.results.Objective}`
               : "No es posible establecer una producción de energía con los valores ingresados."}
           </DialogContentText>
           <br />

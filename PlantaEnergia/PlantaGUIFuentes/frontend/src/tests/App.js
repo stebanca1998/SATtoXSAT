@@ -240,7 +240,7 @@ function App() {
         <Grid item xs="auto" md={2} style={{ paddingTop: 30 }}>
           <form>
             <Typography variant="h6" gutterBottom>
-              Cantidad de días
+              Régimen alto
             </Typography>
             <Button
               className={classes.littleButtons}
@@ -700,7 +700,7 @@ function App() {
         <Grid item xs="auto" md={2} style={{ paddingLeft: 10 }}>
           <form>
             <Typography variant="subtitle1" gutterBottom>
-              Dias de espera
+            Dias consecutivos
             </Typography>
             <Button
               variant="contained"

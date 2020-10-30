@@ -555,7 +555,7 @@ function App() {
         <Grid item xs={2} style={{ paddingLeft: 10, paddingTop: 10 }}>
           <Divider variant="fullWidth" />
           <Typography variant="h6" gutterBottom style={{ paddingTop: 10 }}>
-            Capacidad máxima
+            Régimen alto
           </Typography>
         </Grid>
 
@@ -700,7 +700,7 @@ function App() {
         <Grid item xs="auto" md={2} style={{ paddingLeft: 10 }}>
           <form>
             <Typography variant="subtitle1" gutterBottom>
-              Dias de espera
+             Dias consecutivos
             </Typography>
             <Button
               variant="contained"
@@ -743,7 +743,7 @@ function App() {
         <Grid item xs="auto" md={2} style={{ paddingLeft: 10 }}>
           <form>
             <Typography variant="subtitle1" gutterBottom>
-              Porcentaje limite
+              Limite de producción (%)
             </Typography>
             <Slider
               defaultValue={r}
